@@ -1,20 +1,18 @@
 # Blockworld Tile Puzzle
 # Python 3.7.4
 import numpy as np
-import pandas as pd
 import random
 from search import bfs, dfs, ids, astar
-from node import Node
 
 
 # design interface
 def createPlayerStartGoal(size):
     if size == "default":  # default setup in the assignment
-        player = ((3, 3))
+        playerPos = [3, 3]
         start = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 2, 3, 0]])
         goal = np.array([[0, 0, 0, 0], [0, 1, 0, 0], [0, 2, 0, 0], [0, 3, 0, 0]])
     elif size == "test1":
-        player = ((1, 1))
+        playerPos = [1, 1]
         start = np.array([[0, 0, 0], [1, 0, 0], [0, 2, 0]])
         goal = np.array([[0, 0, 0], [0, 1, 0], [0, 2, 0]])
     else:  # random setup
@@ -24,10 +22,10 @@ def createPlayerStartGoal(size):
         posGoal = range(1+size, size*size, size)    # goal size-1 positions must be at 2nd column
         start[posStart] = range(1, size)     # put them into the puzzle
         goal[posGoal] = range(1, size)  # put them in to the puzzle
-        player = ((size-1, size-1))
+        playerPos = [size-1, size-1]
         start = np.reshape(start, (size, size))
         goal = np.reshape(goal, (size, size))
-    return player, start, goal
+    return playerPos, start, goal
 
 
 def main():
@@ -40,7 +38,7 @@ def main():
     print("Start BFS")
     solution = bfs(playerStart, startState, goalState)
     if solution:
-        print("Solution Found: ", solution)
+        print(solution)
     else:
         print("No Solution")
     return
