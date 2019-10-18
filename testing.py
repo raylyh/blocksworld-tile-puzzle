@@ -29,6 +29,7 @@ d = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1, 2, 3, 0]])
 print(a - b)
 print((c == d).all())
 print(np.array_equal(c, d))
+print(np.array([1,2,3,'R']).dtype)
 
 print(min(timeit.repeat(stmt=test1, setup=setup, repeat=20, number=10000)))
 print(min(timeit.repeat(stmt=test2, setup=setup, repeat=20, number=10000)))

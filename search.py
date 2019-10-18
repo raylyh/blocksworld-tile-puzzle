@@ -1,5 +1,6 @@
 # Search Algorithms
 import numpy as np
+import random
 from operator import add
 from enum import Enum
 from node import Node
@@ -20,12 +21,18 @@ class Direction(Enum):
     LEFT = [0, -1]
     RIGHT = [0, 1]
 
+# print(random.sample(Direction, 1))
 
-def expand(currentNode):
+def expand(currentNode, isRandom=False):
     # successors = empty set
     successors = []
     # Find possible action
-    for action in Direction:
+    if isRandom:
+        randomActions = random.sample(list(Direction), 4)
+
+    for ind, action in enumerate(Direction):
+        if isRandom:
+            action = randomActions[ind]
         newPos = list(map(add, currentNode.pos, action.value))
         # check out of bound
         if -1 in newPos or currentNode.boardSize in newPos:
@@ -50,30 +57,62 @@ def bfs(playerPos, startState, goalState):
     TIME += 1
     # loop
     while True:
-        print("Nodes Generated: ", TIME)
+        # Terminate Loop if too long
+        if TIME == 1000000:
+            return 0
+        if TIME % 1000 == 0:
+            print("Nodes Generated: ", TIME)
         # if there are no candidates for expansion then return failure
         if not fringe:
             return 0
         # choose a leaf node for expansion according to strategy
         currentNode = fringe.pop(0)
-        print("Current Node: ")
-        print(currentNode)
+        # print("Current Node: ")
+        # print(currentNode)
         # if the node contains a goal state then return the corresponding solution
         # else expand the node and add the resulting nodes to the search tree
         if (currentNode.state == goalState).all():
             print("Goal Found!")
-            return currentNode
+            return currentNode, TIME
         else:
             # new successors go at end of fringe (FIFO)
             successors = expand(currentNode)
             fringe += successors
             TIME += len(successors)
-        print('\n')
     return 0
 
 
-def dfs():
-    return 2
+def dfs(playerPos, startState, goalState):
+    # TIME = number of nodes generated
+    TIME = 0
+    # fringe = insert(makeNode(initial-state))
+    fringe = [Node(playerPos, startState)]
+    TIME += 1
+    # loop
+    while True:
+        # Terminate Loop if too long
+        if TIME == 1000000:
+            return 0
+        if TIME % 1000 == 0:
+            print("Nodes Generated: ", TIME)
+        # if there are no candidates for expansion then return failure
+        if not fringe:
+            return 0
+        # choose a leaf node for expansion according to strategy
+        currentNode = fringe.pop(0)
+        # print("Current Node: ")
+        # print(currentNode)
+        # if the node contains a goal state then return the corresponding solution
+        # else expand the node and add the resulting nodes to the search tree
+        if (currentNode.state == goalState).all():
+            print("Goal Found!")
+            return currentNode, TIME
+        else:
+            # new successors go at front of fringe (LIFO)
+            successors = expand(currentNode, True)
+            fringe = successors + fringe
+            TIME += len(successors)
+    return 0
 
 
 def ids():

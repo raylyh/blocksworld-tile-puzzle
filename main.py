@@ -23,24 +23,37 @@ def createPlayerStartGoal(size):
         start[posStart] = range(1, size)     # put them into the puzzle
         goal[posGoal] = range(1, size)  # put them in to the puzzle
         playerPos = [size-1, size-1]
-        start = np.reshape(start, (size, size))
-        goal = np.reshape(goal, (size, size))
+        start = np.reshape(start, (size, size)).astype(int)
+        goal = np.reshape(goal, (size, size)).astype(int)
     return playerPos, start, goal
 
 
 def main():
     boardSize = 3
-    playerStart, startState, goalState = createPlayerStartGoal("test1")
-    print("Start")
-    print(startState)
-    print("Goal")
-    print(goalState)
-    print("Start BFS")
-    solution = bfs(playerStart, startState, goalState)
-    if solution:
-        print(solution)
-    else:
-        print("No Solution")
+    playerStart, startState, goalState = createPlayerStartGoal(boardSize)
+    functions = [bfs, dfs, ids, astar]
+    for func in functions:
+        print("Start")
+        print(startState)
+        print("Goal")
+        print(goalState)
+        print("Start " + str(func))
+        solution, time = func(playerStart, startState, goalState)
+        if solution:
+            print("Nodes Generated: ", time)
+            print("Maximum Depth: ", solution.depth)
+            # special case for dfs: Recursion Error
+            if func == dfs:
+                solutionStr = ""
+                while solution.action is not None:
+                    solutionStr += solution.action.name + ' '
+                    solution = solution.parent
+                print("Read Solution From End of String: ")
+                print(solutionStr)
+            else:
+                print(solution)
+        else:
+            print("No Solution")
     return
 
 
