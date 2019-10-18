@@ -1,5 +1,7 @@
 # Search Algorithms
 import numpy as np
+from operator import add
+from enum import Enum
 from node import Node
 # Tree Search Idea
 """
@@ -12,44 +14,61 @@ loop do
     else expand the node and add the resulting nodes to the search tree
 """
 
+class Direction(Enum):
+    UP = [-1, 0]
+    DOWN = [1, 0]
+    LEFT = [0, -1]
+    RIGHT = [0, 1]
 
-def expand(node):
+
+def expand(currentNode):
     # successors = empty set
     successors = []
     # Find possible action
-
-    # for each eaction, result in successor_function(node) do
-    # s = new node
-    # successors += s
-    print(successors)
+    for action in Direction:
+        newPos = list(map(add, currentNode.pos, action.value))
+        # check out of bound
+        if -1 in newPos or currentNode.boardSize in newPos:
+            continue
+        else:
+            # Update the board state
+            newState = np.copy(currentNode.state)
+            newState[currentNode.pos[0], currentNode.pos[1]], newState[newPos[0], newPos[1]] = newState[newPos[0], newPos[1]], newState[currentNode.pos[0], currentNode.pos[1]]
+            # Save the node
+            s = Node(newPos, newState, currentNode, action, currentNode.cost+1, currentNode.depth+1)
+            successors.append(s)
+    # print("SUCCESSORS")
+    # print(successors)
     return successors
 
 
-def bfs(player, start, goal):
-    # fringe = insert(makeNode(initial-state))
-    fringe = [Node(player, start)]
-    # loop
+def bfs(playerPos, startState, goalState):
+    # TIME = number of nodes generated
     TIME = 0
+    # fringe = insert(makeNode(initial-state))
+    fringe = [Node(playerPos, startState)]
+    TIME += 1
+    # loop
     while True:
-        if TIME == 10:
-            break
-        print("Time Complexity: ", TIME)
+        print("Nodes Generated: ", TIME)
         # if there are no candidates for expansion then return failure
         if not fringe:
             return 0
         # choose a leaf node for expansion according to strategy
         currentNode = fringe.pop(0)
-        TIME += 1
-        print("Current Node: ", currentNode)
+        print("Current Node: ")
+        print(currentNode)
         # if the node contains a goal state then return the corresponding solution
         # else expand the node and add the resulting nodes to the search tree
-        if np.array_equal(currentNode.state, goal):
+        if (currentNode.state == goalState).all():
             print("Goal Found!")
             return currentNode
         else:
             # new successors go at end of fringe (FIFO)
-            fringe += expand(currentNode)
-
+            successors = expand(currentNode)
+            fringe += successors
+            TIME += len(successors)
+        print('\n')
     return 0
 
 
