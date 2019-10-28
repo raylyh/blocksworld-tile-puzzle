@@ -14,4 +14,4 @@ class Node:
     def __str__(self):
         stateWithPlayerPos = self.state.copy().astype(object)
         stateWithPlayerPos[self.pos[0], self.pos[1]] = 'X'
-        return "Player Position: {}\nAction: {}\nState:\n{}\n".format(self.pos, self.action, stateWithPlayerPos) + textwrap.indent("Parent:\n{}".format(self.parent), " ")
+        return "Player Position: {}\nAction: {}\nState:\n{}\nParent:".format(self.pos, self.action, stateWithPlayerPos) + textwrap.indent("\n{}".format(self.parent), " ")

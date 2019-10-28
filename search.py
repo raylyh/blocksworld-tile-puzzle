@@ -49,8 +49,8 @@ def expand(currentNode, isRandom=False):
     return successors
 
 
-def bfs(playerPos, startState, goalState):
-    # TIME = number of nodes generated
+def bfs(playerPos, startState, goalState, maxNodes=500000):
+    # TIME = total number of nodes generated
     TIME = 0
     # fringe = insert(makeNode(initial-state))
     fringe = [Node(playerPos, startState)]
@@ -58,13 +58,11 @@ def bfs(playerPos, startState, goalState):
     # loop
     while True:
         # Terminate Loop if too long
-        if TIME == 1000000:
-            return 0
-        if TIME % 1000 == 0:
-            print("Nodes Generated: ", TIME)
+        if TIME > maxNodes:
+            return 0, TIME
         # if there are no candidates for expansion then return failure
         if not fringe:
-            return 0
+            return 0, TIME
         # choose a leaf node for expansion according to strategy
         currentNode = fringe.pop(0)
         # print("Current Node: ")
@@ -79,25 +77,19 @@ def bfs(playerPos, startState, goalState):
             successors = expand(currentNode)
             fringe += successors
             TIME += len(successors)
-    return 0
 
 
-def dfs(playerPos, startState, goalState):
-    # TIME = number of nodes generated
+def dfs(playerPos, startState, goalState, currentDepth=np.inf):
+    # TIME = total number of nodes generated
     TIME = 0
     # fringe = insert(makeNode(initial-state))
     fringe = [Node(playerPos, startState)]
     TIME += 1
     # loop
     while True:
-        # Terminate Loop if too long
-        if TIME == 1000000:
-            return 0
-        if TIME % 1000 == 0:
-            print("Nodes Generated: ", TIME)
         # if there are no candidates for expansion then return failure
         if not fringe:
-            return 0
+            return 0, TIME
         # choose a leaf node for expansion according to strategy
         currentNode = fringe.pop(0)
         # print("Current Node: ")
@@ -109,14 +101,25 @@ def dfs(playerPos, startState, goalState):
             return currentNode, TIME
         else:
             # new successors go at front of fringe (LIFO)
-            successors = expand(currentNode, True)
-            fringe = successors + fringe
-            TIME += len(successors)
-    return 0
+            if currentNode.depth < currentDepth:
+                successors = expand(currentNode, isRandom=True)
+                fringe = successors + fringe
+                TIME += len(successors)
 
 
-def ids():
-    return 3
+def ids(playerPos, startState, goalState):
+    # TIME = total number of nodes generated
+    TIME = 0
+    # Start from Depth 0
+    DEPTH = 0
+    while True:
+        result, time = dfs(playerPos, startState, goalState, currentDepth=DEPTH)
+        print("Depth Limited Search: At Depth: {}, Nodes Generated: {}".format(DEPTH, time))
+        TIME += time
+        if result:
+            return result, TIME
+        else:
+            DEPTH += 1
 
 
 def astar():

@@ -15,6 +15,10 @@ def createPlayerStartGoal(size):
         playerPos = [1, 1]
         start = np.array([[0, 0, 0], [1, 0, 0], [0, 2, 0]])
         goal = np.array([[0, 0, 0], [0, 1, 0], [0, 2, 0]])
+    elif size == "test2":
+        playerPos = [3, 3]
+        start = np.array([[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 0], [3, 0, 0, 0]])
+        goal = np.array([[0, 0, 0, 0], [0, 1, 0, 0], [0, 2, 0, 0], [0, 3, 0, 0]])
     else:  # random setup
         size = int(size)
         start, goal = np.zeros(size * size), np.zeros(size * size)
@@ -29,7 +33,7 @@ def createPlayerStartGoal(size):
 
 
 def main():
-    boardSize = 3
+    boardSize = "test2"
     playerStart, startState, goalState = createPlayerStartGoal(boardSize)
     functions = [bfs, dfs, ids, astar]
     for func in functions:
@@ -37,23 +41,26 @@ def main():
         print(startState)
         print("Goal")
         print(goalState)
-        print("Start " + str(func))
+        print("Start " + str(func.__name__))
         solution, time = func(playerStart, startState, goalState)
         if solution:
-            print("Nodes Generated: ", time)
+            print("\n\n****** Solution ******")
+            print("Total Nodes Generated: ", time)
             print("Maximum Depth: ", solution.depth)
             # special case for dfs: Recursion Error
             if func == dfs:
                 solutionStr = ""
                 while solution.action is not None:
-                    solutionStr += solution.action.name + ' '
+                    solutionStr += solution.action.name[0] + ' '
                     solution = solution.parent
-                print("Read Solution From End of String: ")
+                print("Read Solution From End to Start of String: ")
                 print(solutionStr)
             else:
                 print(solution)
         else:
-            print("No Solution")
+            print("****** No Solution ******")
+            print("Total Nodes Generated: ", time)
+        print("\n\n")
     return
 
 
