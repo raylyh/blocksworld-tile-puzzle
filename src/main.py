@@ -36,11 +36,13 @@ def createPlayerStartGoal(size):
 
 def main():
     # define the testing board states and the starting position
-    boardSize = "test2"
+    boardSize = "test1"
     playerStart, startState, goalState = createPlayerStartGoal(boardSize)
     # Search functions to run
     # Available options: bfs, dfs, ids, astar
-    functions = [dfs]
+    functions = [bfs, dfs, ids, astar]
+
+
     print("Start")
     print(startState)
     print("Goal")

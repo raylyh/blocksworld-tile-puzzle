@@ -16,11 +16,6 @@ loop do
     else expand the node and add the resulting nodes to the search tree
 """
 
-"""
-Print functions are for debugging purposes and commented to run faster
-"""
-
-
 class Direction(Enum):
     UP = [-1, 0]
     DOWN = [1, 0]
@@ -39,7 +34,7 @@ def expand(currentNode, isRandom=False):
         if isRandom:
             action = randomActions[ind]
         newPos = list(map(add, currentNode.pos, action.value))
-        # check out of bound
+        # check if new position is out of bound
         if -1 in newPos or currentNode.boardSize in newPos:
             continue
         else:
@@ -55,10 +50,9 @@ def expand(currentNode, isRandom=False):
 def bfs(playerPos, startState, goalState, maxNodes=5000000):
     # TIME = total number of nodes generated
     TIME = 0
-    # fringe = the queue for nodes expansion
     fringe = [Node(playerPos, startState)]
     TIME += 1
-    # loop
+
     while True:
         # print(f"Total Nodes Generated: {TIME}\n")
         # Terminate Loop if too long
@@ -105,9 +99,9 @@ def dfs(playerPos, startState, goalState, maxDepth=np.inf):
             return currentNode, TIME
         else:
             # new successors go at front of fringe (LIFO)
-            # if current depth is smalller than the maximum depth
+            # if current depth is smaller than the maximum depth
             # then expand on the current selected node
-            # this if-statement has no effect in depth-first search
+            # this if-statement has no effect in DFS
             if currentNode.depth < maxDepth:
                 successors = expand(currentNode, isRandom=True)
                 # print(f"***Successors generated, add to fringe***")
